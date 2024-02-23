@@ -1,0 +1,69 @@
+{
+  "name": "core-utils",
+  "version": "1.0.0",
+  "description": "A collection of utility functions for use in RedSky Engineering projects",
+  "main": "lib/main/index.js",
+  "typings": "lib/main/index.d.ts",
+  "module": "lib/module/index.js",
+  "repository": "https://github.com/amelspahic/typescript-library-template.git",
+  "author": "Joshua Hintze",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "library",
+    "utility functions"
+  ],
+  "files": [
+    "lib/main",
+    "lib/module",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
+    "doc": "run-s doc:html && open-cli lib/docs/index.html",
+    "doc:html": "typedoc src/ --exclude **/*.spec.ts --out lib/docs",
+    "doc:json": "typedoc src/ --exclude **/*.spec.ts --json lib/docs/typedoc.json",
+    "prepare": "husky",
+    "test": "run-s build test:*",
+    "test:lint": "eslint src --ext .ts",
+    "test:prettier": "prettier \"src/**/*.ts\" --check",
+    "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:pre:alpha": "standard-version --prerelease alpha"
+  },
+  "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.9",
+    "@types/node": "^20.11.20",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "npm-run-all": "^4.1.5",
+    "open-cli": "^8.0.0",
+    "prettier": "^3.2.5",
+    "standard-version": "^9.5.0",
+    "typedoc": "^0.25.8",
+    "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write",
+    "*.ts": "eslint --fix"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
+  }
+}
