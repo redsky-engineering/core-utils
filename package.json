@@ -5,7 +5,7 @@
   "main": "lib/main/index.js",
   "typings": "lib/main/index.d.ts",
   "module": "lib/module/index.js",
-  "repository": "https://github.com/amelspahic/typescript-library-template.git",
+  "repository": "https://github.com/redsky-engineering/core-utils",
   "author": "Joshua Hintze",
   "license": "MIT",
   "keywords": [

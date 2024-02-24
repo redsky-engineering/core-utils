@@ -49,7 +49,7 @@ Push up the changes and tags to master branch on remote, make sure to include ta
 
 Finally, publish to npmjs.com with the command
 
-`pnpm build:publish`
+`pnpm publish`
 
 ## Commit Messages
 

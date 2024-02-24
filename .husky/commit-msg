@@ -1,0 +1,5 @@
+# Get the directory of the current script
+dir="$(dirname -- "$0")"
+
+# Call the other script and pass all arguments
+bash "$dir/commit-msg-bash.sh" "$@"
