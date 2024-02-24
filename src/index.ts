@@ -1,3 +1,5 @@
+// Todo: fix all the any's and remove this line
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import cloneDeep from 'lodash.clonedeep';
 
 declare global {
@@ -10,7 +12,6 @@ interface RsResponseData<T> {
 	data: T;
 }
 
-// eslint-disable-next-line no-extend-native
 Date.prototype.getWeekOfMonth = function () {
 	const firstWeekday = new Date(this.getFullYear(), this.getMonth(), 1).getDay();
 	const offsetDate = this.getDate() + firstWeekday - 1;
@@ -63,7 +64,7 @@ export class StringUtils {
 	 * @returns {string} - human-readable string (e.x. Uppercase String)
 	 */
 	static convertEnumToHuman(enumValue: string): string {
-		let humanValueArray = enumValue.split('_');
+		const humanValueArray = enumValue.split('_');
 		humanValueArray.forEach((value, index) => {
 			humanValueArray[index] = this.capitalizeFirst(value.toLowerCase());
 		});
@@ -82,12 +83,12 @@ export class StringUtils {
 		if (sanitizedTime > 1259) {
 			sanitizedTime = sanitizedTime - 1200;
 			if (sanitizedTime.toString().length === 3) {
-				let minutes = sanitizedTime.toString().slice(-2);
-				let hour = sanitizedTime.toString().slice(0, 1);
+				const minutes = sanitizedTime.toString().slice(-2);
+				const hour = sanitizedTime.toString().slice(0, 1);
 				return `${hour}:${minutes} PM`;
 			} else if (sanitizedTime.toString().length === 4) {
-				let minutes = sanitizedTime.toString().slice(-2);
-				let hours = sanitizedTime.toString().slice(0, 2);
+				const minutes = sanitizedTime.toString().slice(-2);
+				const hours = sanitizedTime.toString().slice(0, 2);
 				return `${hours}:${minutes} PM`;
 			} else {
 				return '';
@@ -96,15 +97,15 @@ export class StringUtils {
 		if (sanitizedTime.toString().length < 3) {
 			let minute = sanitizedTime.toString();
 			if (minute.length === 1) minute = '0' + minute;
-			let hour = '12';
+			const hour = '12';
 			return `${hour}:${minute} AM`;
 		} else if (sanitizedTime.toString().length === 3) {
-			let minutes = sanitizedTime.toString().slice(-2);
-			let hour = sanitizedTime.toString().slice(0, 1);
+			const minutes = sanitizedTime.toString().slice(-2);
+			const hour = sanitizedTime.toString().slice(0, 1);
 			return `${hour}:${minutes} AM`;
 		} else if (sanitizedTime.toString().length === 4) {
-			let minutes = sanitizedTime.toString().slice(-2);
-			let hours = sanitizedTime.toString().slice(0, 2);
+			const minutes = sanitizedTime.toString().slice(-2);
+			const hours = sanitizedTime.toString().slice(0, 2);
 			return `${hours}:${minutes} ${hours === '12' ? 'PM' : 'AM'}`;
 		} else {
 			return '';
@@ -166,22 +167,23 @@ export class StringUtils {
 	 * @returns {boolean} - true or false
 	 */
 	static validateEmail(email: string): boolean {
-		let tester =
+		const tester =
+			// eslint-disable-next-line no-useless-escape
 			/^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
 		if (!email) return false;
 
-		let emailParts = email.split('@');
+		const emailParts = email.split('@');
 
 		if (emailParts.length !== 2) return false;
 
-		let account = emailParts[0];
-		let address = emailParts[1];
+		const account = emailParts[0];
+		const address = emailParts[1];
 
 		if (account.length > 64) return false;
 		else if (address.length > 255) return false;
 
-		let domainParts = address.split('.');
+		const domainParts = address.split('.');
 		if (
 			domainParts.some(function (part) {
 				return part.length > 63;
@@ -200,7 +202,7 @@ export class StringUtils {
 	 */
 	static removeLineEndings(value: string): string {
 		if (!value) return '';
-		let newValue = value
+		const newValue = value
 			.replace(/\r?\n|\t|\r/g, ' ') // remove carriage return, new line, and tab
 			.match(/[^ ]+/g); // remove extra spaces
 		if (newValue) return newValue.join(' ');
@@ -225,7 +227,7 @@ export class StringUtils {
 	 * @private
 	 */
 	static semVerToNumber(versionString: string): number {
-		let versionSplit = versionString.split('.');
+		const versionSplit = versionString.split('.');
 		let versionValue = 0;
 		let versionMultiplier = 1;
 		for (let i = versionSplit.length - 1; i >= 0; i--) {
@@ -266,32 +268,6 @@ export class StringUtils {
 	}
 
 	/**
-	 * Format number to currency format
-	 * @name formatMoney
-	 * @param {number} money
-	 * @returns {string}
-	 */
-	static formatMoney(money: number): string {
-		var n: any = money / 100,
-			c = 2,
-			d = '.',
-			t = ',',
-			s = n < 0 ? '-' : '',
-			i: any = String(parseInt((n = Math.abs(Number(n) || 0).toFixed(c))));
-		// eslint-disable-next-line
-		var j: number = (j = i.length) > 3 ? j % 3 : 0;
-		return (
-			s +
-			(j ? i.substr(0, j) + t : '') +
-			i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) +
-			(d +
-				Math.abs(n - i)
-					.toFixed(c)
-					.slice(2))
-		);
-	}
-
-	/**
 	 * Check if it is an empty string
 	 * @name isEmpty
 	 * @param {string} value
@@ -312,8 +288,8 @@ export class StringUtils {
 	 */
 	static formatPriceRange(input: string): string {
 		if (!input) return '-';
-		let start = parseInt(input.split('-')[0]) / 100 || '';
-		let end = parseInt(input.split('-')[1]) / 100 || '';
+		const start = parseInt(input.split('-')[0]) / 100 || '';
+		const end = parseInt(input.split('-')[1]) / 100 || '';
 		if (!start && end) return `$${end}`;
 		if (!end && start) return `$${start}`;
 		if (start === end) return `$${start}`;
@@ -352,7 +328,7 @@ export class StringUtils {
 	 */
 	static snakeCaseToHuman(snakeCase: string): string {
 		if (snakeCase.constructor !== String || snakeCase === '') return '';
-		let humanize = snakeCase.split('_');
+		const humanize = snakeCase.split('_');
 		for (let i = 0; i < humanize.length; i++) {
 			humanize[i] = humanize[i][0].toUpperCase() + humanize[i].substr(1);
 		}
@@ -364,8 +340,8 @@ export class StringUtils {
 	 * @param {string || number} intNum
 	 * @returns {string}
 	 */
-	static addCommasToNumber(intNum: any) {
-		if (isNaN(intNum)) return intNum;
+	static addCommasToNumber(intNum: number): string {
+		if (isNaN(intNum)) return intNum.toString();
 		return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
 	}
 
@@ -395,8 +371,8 @@ export class StringUtils {
 	 * @returns string Formatted number Ex (801) 361-5555
 	 */
 	static formatPhoneNumber(phone: string | number): string {
-		let cleaned = ('' + phone).replace(/\D/g, '');
-		let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+		const cleaned = ('' + phone).replace(/\D/g, '');
+		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
 
 		if (match) {
 			return `(${match[1]}) ${match[2]}-${match[3]}`;
@@ -434,11 +410,11 @@ export class StringUtils {
 	 */
 	static getHumanReadableByteValue(bytes: number, digits: number = 1): string {
 		if (bytes < 1024) return `${bytes} B`;
-		let kiloBytes = bytes / 1024;
+		const kiloBytes = bytes / 1024;
 		if (kiloBytes < 1024) return `${kiloBytes.toFixed(digits)} KB`;
-		let megaBytes = kiloBytes / 1024;
+		const megaBytes = kiloBytes / 1024;
 		if (megaBytes < 1024) return `${megaBytes.toFixed(digits)} MB`;
-		let gigaBytes = megaBytes / 1024;
+		const gigaBytes = megaBytes / 1024;
 		return `${gigaBytes.toFixed(digits)} GB`;
 	}
 
@@ -448,6 +424,7 @@ export class StringUtils {
 	 * @returns {string} - Pascal Case string
 	 */
 	static toPascalCasing(inputString: string): string {
+		// eslint-disable-next-line no-useless-escape
 		const regex = /((\_|-)\w)/;
 		const convert = function (matches: string) {
 			return matches[1].toUpperCase();
@@ -542,14 +519,14 @@ export class ObjectUtils {
 	 * @param {...string[]} properties - property string you wish to dedupe on
 	 * @returns {any[]} - Deduped version of the original dataset
 	 */
-	static multiPropDedupe<T extends Object>(dataset: T[], ...properties: string[]): T[] {
+	static multiPropDedupe<T extends object>(dataset: T[], ...properties: string[]): T[] {
 		if (properties.length === 0) return dataset;
 		const values: T[] = [];
-		for (let data of dataset) {
+		for (const data of dataset) {
 			if (
-				values.some(function (obj: any) {
-					for (let prop of properties) {
-						//@ts-ignore
+				values.some(function (obj: object) {
+					for (const prop of properties) {
+						//@ts-expect-error - this is a dynamic property
 						if (data[prop] !== obj[prop]) return false;
 					}
 					return true;
@@ -567,15 +544,15 @@ export class ObjectUtils {
 	 * @param headers - dictionary with the key being the objects key and the value being what you want it called in the csv file
 	 * @returns string - csv formatted string of object
 	 */
-	static convertToCSV<T extends {}>(rows: T[], headers?: { [Property in keyof Partial<T>]: string }): string {
+	static convertToCSV<T extends object>(rows: T[], headers?: { [Property in keyof Partial<T>]: string }): string {
 		type keys = keyof T;
 		const csvKeys: keys[] = (headers ? Object.keys(headers) : Object.keys(rows[0])) as keys[];
 		let stringBuilder = (headers ? Object.values(headers) : csvKeys).join(',');
 		stringBuilder += '\r\n';
-		for (let row of rows) {
-			let stringArray: string[] = [];
-			for (let key of csvKeys) {
-				const value: any = row[key];
+		for (const row of rows) {
+			const stringArray: string[] = [];
+			for (const key of csvKeys) {
+				const value: unknown = row[key];
 				if (!value && value !== 0) {
 					stringArray.push('');
 					continue;
@@ -615,7 +592,7 @@ export class ObjectUtils {
 		let next_place = 0;
 		const removed: T[] = [];
 
-		for (let value of array) {
+		for (const value of array) {
 			if (condition(value)) array[next_place++] = value;
 			else removed.push(value);
 		}
@@ -629,7 +606,7 @@ export class ObjectUtils {
 	 * @param obj
 	 * @returns
 	 */
-	static forceCast<T>(obj: any): T {
+	static forceCast<T>(obj: unknown): T {
 		return obj as unknown as T;
 	}
 
@@ -639,11 +616,13 @@ export class ObjectUtils {
 	 * @param json
 	 * @returns {object} - Returns a json object of the stringified object
 	 */
-	static safeParse(json: any): object | any {
+	static safeParse<T extends object>(json: unknown): T | object {
 		if (!json) return {};
 		try {
 			if (typeof json === 'string') return JSON.parse(json);
-		} catch (e) {}
+		} catch (e) {
+			/* empty */
+		}
 		return this.clone(json);
 	}
 
@@ -653,7 +632,7 @@ export class ObjectUtils {
 	 * @param json - any data structure
 	 * @returns - Returns a fully parsed data structure
 	 */
-	static deepSafeParse(json: any): object | any {
+	static deepSafeParse<T>(json: unknown): object | T | string | unknown {
 		const isNumString = (str: string) => !isNaN(Number(str));
 		if (typeof json === 'string') {
 			if (isNumString(json)) {
@@ -668,9 +647,10 @@ export class ObjectUtils {
 			return json.map((val) => ObjectUtils.deepSafeParse(val));
 		} else if (typeof json === 'object' && json !== null) {
 			return Object.keys(json).reduce((obj, key) => {
+				// @ts-expect-error - Object could be anything
 				const val = json[key];
-				// @ts-ignore
-				obj[key] = isNumString(val) ? val : ObjectUtils.deepSafeParse(val);
+				// @ts-expect-error - Object could be anything
+				obj[key] = isNumString(val) ? val : ObjectUtils.deepSafeParse<T>(val);
 				return obj;
 			}, {});
 		} else {
@@ -700,8 +680,8 @@ export class ObjectUtils {
 				continue;
 			}
 
-			let value: any = entity[property],
-				newProperty = property;
+			let value: any = entity[property];
+			const newProperty = property;
 			if (typeof value === 'object') {
 				value = ObjectUtils.deepValueReplace(value, search, replacement);
 			} else if (typeof value === 'string') {
@@ -721,7 +701,7 @@ export class ObjectUtils {
 	 * @returns {boolean}
 	 */
 	static isEmptyObject(obj: object): boolean {
-		for (let key in obj) {
+		for (const key in obj) {
 			if (obj.hasOwnProperty(key)) return false;
 		}
 		return true;
@@ -731,28 +711,28 @@ export class ObjectUtils {
 	 * Tests if passed in value is an object and is not null
 	 * @param credentials
 	 */
-	static isObject(obj: any): boolean {
+	static isObject(obj: unknown): boolean {
 		return typeof obj === 'object' && obj !== null;
 	}
 
 	/**
 	 * Serialize an object to query string
 	 * @name serialize
-	 * @param {any} obj
+	 * @param {object} obj
 	 * @returns {string}
 	 */
 	static serialize(obj: any): string {
-		let str = [];
-		for (let p in obj)
+		const str = [];
+		for (const p in obj)
 			if (obj.hasOwnProperty(p)) {
-				if (obj[p] instanceof Array) {
-					let concatArray: any = [];
+				if (Array.isArray(obj[p])) {
+					const concatArray: string[] = [];
 					for (let i = 0; i < obj[p].length; i++) {
 						concatArray.push(encodeURIComponent(p) + '[]=' + encodeURIComponent(obj[p][i]));
 					}
-					concatArray = concatArray.join('&');
-					str.push(concatArray);
-				} else if (obj[p] instanceof Object) {
+					const concatStr = concatArray.join('&');
+					str.push(concatStr);
+				} else if (typeof obj[p] === 'object') {
 					str.push(encodeURIComponent(p) + '=' + JSON.stringify(obj[p]));
 				} else {
 					str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
@@ -768,19 +748,19 @@ export class ObjectUtils {
 	 * @param {any} metadata
 	 * @returns {any}
 	 */
-	static serverToClientObj<T extends Object>(object: any, metadata: any): T {
+	static serverToClientObj<T extends object>(object: any, metadata: any): T {
 		const meta = metadata ?? null;
 		const obj = cloneDeep(object);
 		if (obj && Array.isArray(obj)) {
-			for (let j in obj) {
-				for (let i in meta) {
+			for (const j in obj) {
+				for (const i in meta) {
 					if (obj[j][i] !== undefined) {
 						obj[j][i] = ObjectUtils.serverToClientProperty(obj[j][i], meta[i]);
 					}
 				}
 			}
 		} else {
-			for (let i in meta) {
+			for (const i in meta) {
 				if (obj[i] !== undefined) {
 					obj[i] = ObjectUtils.serverToClientProperty(obj[i], meta[i]);
 				}
@@ -807,9 +787,9 @@ export class ObjectUtils {
 	 */
 	static clientToServerObj(obj: any, metadata: any) {
 		const meta = metadata ?? null;
-		let object = cloneDeep(obj);
+		const object = cloneDeep(obj);
 		if (!meta) {
-			for (let i in object) {
+			for (const i in object) {
 				if (DateUtils.isClientDate(object[i])) {
 					object[i] = DateUtils.clientToServerDateTime(object[i]);
 				} else if (MiscUtils.isBoolean(object[i])) {
@@ -818,15 +798,15 @@ export class ObjectUtils {
 			}
 		}
 		if (object && Array.isArray(object)) {
-			for (var j in object) {
-				for (let i in meta) {
+			for (const j in object) {
+				for (const i in meta) {
 					if (object[j][i]) {
 						object[j][i] = ObjectUtils.clientToServerProperty(object[j][i], meta[i]);
 					}
 				}
 			}
 		} else {
-			for (let i in meta) {
+			for (const i in meta) {
 				object[i] = ObjectUtils.clientToServerProperty(object[i], meta[i]);
 			}
 		}
@@ -854,7 +834,7 @@ export class ObjectUtils {
 	 */
 	static toArray<T>(obj: any) {
 		const res: T[] = [];
-		for (let i in obj) {
+		for (const i in obj) {
 			res.push(obj[i]);
 		}
 		return res;
@@ -868,8 +848,8 @@ export class ObjectUtils {
 	 * @returns {Object}
 	 */
 	static toObject<T>(array: T[], property: keyof T) {
-		let res: any = {};
-		for (let i in array) {
+		const res: any = {};
+		for (const i in array) {
 			if (array[i] === null) continue;
 			res[array[i][property]] = array[i];
 		}
@@ -884,7 +864,7 @@ export class ObjectUtils {
 	 * @returns {T}
 	 */
 	static update<T>(obj: T, newObj: T) {
-		for (let i in newObj) {
+		for (const i in newObj) {
 			obj[i] = newObj[i];
 		}
 		return obj;
@@ -903,7 +883,7 @@ export class ObjectUtils {
 			sortOrder = -1;
 		}
 		const compare = function (a: T, b: T) {
-			let result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+			const result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
 			return result * sortOrder;
 		};
 
@@ -917,8 +897,8 @@ export class ObjectUtils {
 	 * @param {any} obj - The dataset to check
 	 * @returns {boolean}
 	 */
-	static isEmpty(obj: any) {
-		for (let i in obj) {
+	static isEmpty(obj: object) {
+		for (const i in obj) {
 			if (obj.hasOwnProperty(i)) return false;
 		}
 		return true;
@@ -930,7 +910,7 @@ export class ObjectUtils {
 	 * @param {any} obj
 	 * @returns {number}
 	 */
-	static getObjectLength(obj: any) {
+	static getObjectLength(obj: object) {
 		return Object.keys(obj).length;
 	}
 
@@ -945,21 +925,6 @@ export class ObjectUtils {
 			return obj.data;
 		}
 		return obj;
-	}
-
-	/**
-	 * Returns a base object either through JSON.parse or on failure the original item is returned
-	 * @name smartParse
-	 * @param json
-	 * @returns {object} - Returns a json object of the stringified object
-	 */
-	static smartParse(json: any): object | any {
-		if (!json) return {};
-		try {
-			return JSON.parse(json);
-		} catch (e) {
-			return json;
-		}
 	}
 
 	/**
@@ -979,8 +944,8 @@ export class ObjectUtils {
 	 * @returns {Object}
 	 */
 	static group(dataset: any[], property: string) {
-		let res: any = {};
-		for (let i in dataset) {
+		const res: any = {};
+		for (const i in dataset) {
 			if (!res[dataset[i][property]]) res[dataset[i][property]] = [];
 
 			res[dataset[i][property]].push(dataset[i]);
@@ -995,7 +960,7 @@ export class ObjectUtils {
 	 * @returns {Object}
 	 * */
 	static filterObject(obj: any, fields: string[]) {
-		for (let i in obj) {
+		for (const i in obj) {
 			if (fields.includes(i)) continue;
 			delete obj[i];
 		}
@@ -1038,7 +1003,7 @@ export class ObjectUtils {
 	static dedupe(dataset: any[], property: string): any {
 		const res = [];
 		const existsValue: any[] = [];
-		for (let data of dataset) {
+		for (const data of dataset) {
 			if (existsValue.includes(data[property])) continue;
 			res.push(data);
 			existsValue.push(data[property]);
@@ -1102,9 +1067,9 @@ export class MiscUtils {
 	static async sha256Encode(value: string): Promise<string> {
 		const encoder = new TextEncoder();
 		const data = encoder.encode(value);
-		let hash = await crypto.subtle.digest('SHA-256', data);
+		const hash = await crypto.subtle.digest('SHA-256', data);
 		// convert array buffer to string
-		let hashArray = Array.from(new Uint8Array(hash));
+		const hashArray = Array.from(new Uint8Array(hash));
 		return hashArray.map((b) => ('00' + b.toString(16)).slice(-2)).join('');
 	}
 
@@ -1129,7 +1094,7 @@ export class MiscUtils {
 	 */
 	static sanitize<T, U extends string | number>(arg: T, remove: U[]): Omit<T, U> {
 		const result: any = { ...arg };
-		for (let key of remove) {
+		for (const key of remove) {
 			delete result[key];
 		}
 		return result;
@@ -1142,14 +1107,14 @@ export class MiscUtils {
 	 * @returns The msg from the RsError object or the defaultMessage passed in
 	 */
 	static getRsErrorMessage(error: any, defaultMessage: string): string {
-		let errorResponse = ObjectUtils.smartParse(error);
+		const errorResponse = ObjectUtils.safeParse(error);
 		if (typeof errorResponse !== 'object') return errorResponse;
 		if ('msg' in errorResponse) {
 			if (typeof errorResponse.msg === 'object') return JSON.stringify(errorResponse.msg);
-			return errorResponse.msg;
+			return errorResponse.msg as string;
 		} else if ('err' in errorResponse) {
 			if (typeof errorResponse.err === 'object') return JSON.stringify(errorResponse.err);
-			return errorResponse.err;
+			return errorResponse.err as string;
 		}
 		return defaultMessage;
 	}
@@ -1164,12 +1129,12 @@ export class MiscUtils {
 		if (!url) return '';
 		// The Node URL class doesn't consider it a valid url without http or https. Add if needed
 		if (url.indexOf('http') === -1) url = 'http://' + url;
-		let hostname = new URL(url).hostname;
+		const hostname = new URL(url).hostname;
 		if (hostname.includes('ontrac')) {
 			return hostname.split('.')[0];
 		}
 		// Remove all subdomains
-		let hostnameSplit = hostname.split('.').slice(-2);
+		const hostnameSplit = hostname.split('.').slice(-2);
 		return hostnameSplit.join('.');
 	}
 
@@ -1192,8 +1157,8 @@ export class MiscUtils {
 	 */
 	static getFirstSubdomain(url: string): string {
 		if (!url) return '';
-		let hostname = this.getHostname(url);
-		let hostnameSplit = hostname.split('.');
+		const hostname = this.getHostname(url);
+		const hostnameSplit = hostname.split('.');
 		if (hostnameSplit.length > 2) return hostnameSplit.splice(-3, 1)[0];
 		return '';
 	}
@@ -1214,8 +1179,8 @@ export class MiscUtils {
 	 * @returns An object whose children are either numbers, strings, booleans, no nested objects
 	 */
 	static convertDataForUrlParams(data: any): any {
-		let convertedData: any = {};
-		for (let i in data) {
+		const convertedData: any = {};
+		for (const i in data) {
 			if (typeof data[i] === 'object') {
 				convertedData[i] = JSON.stringify(data[i]);
 			} else {
@@ -1246,7 +1211,7 @@ export class DateUtils {
 	 * @returns {number} - Returns a number
 	 */
 	static daysBetweenStartAndEndDates(startDate: Date, endDate: Date): number {
-		let differenceInTime = endDate.getTime() - startDate.getTime();
+		const differenceInTime = endDate.getTime() - startDate.getTime();
 		return differenceInTime / (1000 * 3600 * 24);
 	}
 
@@ -1257,7 +1222,7 @@ export class DateUtils {
 	 */
 	static formatDateForUser(date: string | Date) {
 		if (date === 'N/A') return date;
-		let newDate = new Date(`${date}`);
+		const newDate = new Date(`${date}`);
 		return `${(newDate.getMonth() + 1).toString()}-${newDate.getDate()}-${newDate.getFullYear()}`;
 	}
 
@@ -1268,15 +1233,15 @@ export class DateUtils {
 	 * @returns Friendly string Example: 1 day, 2 hours, 3 minutes, 4 seconds
 	 */
 	static getDateDifferenceFriendly(endDate: Date, startDate: Date, showNegative = true): string {
-		let isNegative = endDate < startDate;
+		const isNegative = endDate < startDate;
 		let diff = Math.abs(endDate.getTime() - startDate.getTime());
-		let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+		const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 		diff -= days * (1000 * 60 * 60 * 24);
-		let hours = Math.floor(diff / (1000 * 60 * 60));
+		const hours = Math.floor(diff / (1000 * 60 * 60));
 		diff -= hours * (1000 * 60 * 60);
-		let minutes = Math.floor(diff / (1000 * 60));
+		const minutes = Math.floor(diff / (1000 * 60));
 		diff -= minutes * (1000 * 60);
-		let seconds = Math.floor(diff / 1000);
+		const seconds = Math.floor(diff / 1000);
 
 		if (days > 0) return `${showNegative && isNegative ? '-' : ''}${days} day${days > 1 ? 's' : ''}`;
 		if (hours > 0) return `${showNegative && isNegative ? '-' : ''}${hours} hour${hours > 1 ? 's' : ''}`;
@@ -1336,7 +1301,7 @@ export class DateUtils {
 	 * @returns {string} - Returns a string for datetime insertion into a database
 	 * */
 	static hoursFromNow(hours: number): string {
-		let today = new Date();
+		const today = new Date();
 		today.setTime(today.getTime() + hours * (1000 * 60 * 60));
 		return this.clientToServerDateTime(today);
 	}
@@ -1347,7 +1312,7 @@ export class DateUtils {
 	 * @returns {string} - Returns a string for datetime insertion into a database
 	 * */
 	static minutesFromNow(minutes: number): string {
-		let today = new Date();
+		const today = new Date();
 		today.setTime(today.getTime() + minutes * (1000 * 60));
 		return this.clientToServerDateTime(today);
 	}
@@ -1416,13 +1381,13 @@ export class DateUtils {
 	 */
 	static displayTime(date: Date | string) {
 		if (typeof date === 'string') {
-			let workingDate: Date | null = this.getDateFromString(date);
+			const workingDate: Date | null = this.getDateFromString(date);
 			if (workingDate == null) return date;
 			date = workingDate;
 		}
 		let hours = date.getHours();
 		let minutes: number | string = date.getMinutes();
-		let ampm = hours >= 12 ? 'pm' : 'am';
+		const ampm = hours >= 12 ? 'pm' : 'am';
 		hours = hours % 12;
 		hours = hours ? hours : 12; // The hour '0' should be '12'
 		minutes = minutes < 10 ? `0${minutes}` : minutes;
@@ -1436,13 +1401,13 @@ export class DateUtils {
 	 */
 	static displayDate(date: Date | string): string {
 		if (typeof date === 'string') {
-			let workingDate: Date | null = this.getDateFromString(date);
+			const workingDate: Date | null = this.getDateFromString(date);
 			if (workingDate == null) return date;
 			date = workingDate;
 		}
-		let month = date.getMonth() + 1;
-		let day = date.getDate();
-		let year = date.getFullYear();
+		const month = date.getMonth() + 1;
+		const day = date.getDate();
+		const year = date.getFullYear();
 
 		return `${month}/${day}/${year}`;
 	}
@@ -1560,7 +1525,7 @@ export class DateUtils {
 		if (!dateStr) {
 			return dateStr;
 		}
-		let date = DateUtils.dateFromString(dateStr);
+		const date = DateUtils.dateFromString(dateStr);
 		return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 	}
 
@@ -1572,7 +1537,7 @@ export class DateUtils {
 	 */
 	static dateFromString(dateStr: string) {
 		dateStr = dateStr.replace('T', ' ').replace('Z', '');
-		let a = dateStr.split(/[^0-9]/).map((s) => {
+		const a = dateStr.split(/[^0-9]/).map((s) => {
 			return parseInt(s, 10);
 		});
 		return new Date(a[0], a[1] - 1 || 0, a[2] || 1, a[3] || 0, a[4] || 0, a[5] || 0, a[6] || 0);

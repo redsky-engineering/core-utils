@@ -1,5 +1,5 @@
 {
-  "name": "core-utils",
+  "name": "@redskytech/core-utils",
   "version": "1.0.0",
   "description": "A collection of utility functions for use in RedSky Engineering projects",
   "main": "lib/main/index.js",
