@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/redsky-engineering/core-utils/compare/v1.0.2...v1.1.0) (2024-04-06)
+
+
+### Bug Fixes
+
+* updates for better consistencys in naming ([d7dee2e](https://github.com/redsky-engineering/core-utils/commit/d7dee2e38699be78dbb32adfd90298d678293de8))
+
 ### [1.0.2](https://github.com/redsky-engineering/core-utils/compare/v1.0.1...v1.0.2) (2024-02-24)
 
 
