@@ -769,11 +769,11 @@ export class ObjectUtils {
 		return obj;
 	}
 
-	static serverToClientProperty(property: any, metadata: any) {
+	private static serverToClientProperty(property: any, metadata: any) {
 		if (metadata.type === 'date') {
-			property = DateUtils.serverToClientDate(property);
+			property = DateUtils.dbDateToJsDate(property);
 		} else if (metadata.type === 'datetime') {
-			property = DateUtils.serverToClientDateTime(property);
+			property = DateUtils.dbDateTimeToJsDate(property);
 		}
 		return property;
 	}
@@ -790,8 +790,8 @@ export class ObjectUtils {
 		const object = cloneDeep(obj);
 		if (!meta) {
 			for (const i in object) {
-				if (DateUtils.isClientDate(object[i])) {
-					object[i] = DateUtils.clientToServerDateTime(object[i]);
+				if (DateUtils.isJsDate(object[i])) {
+					object[i] = DateUtils.jsDateToDbDateTime(object[i]);
 				} else if (MiscUtils.isBoolean(object[i])) {
 					object[i] = object[i] ? 1 : 0;
 				}
@@ -815,9 +815,9 @@ export class ObjectUtils {
 
 	static clientToServerProperty(property: any, metadata: any) {
 		if (metadata.type === 'date') {
-			return DateUtils.clientToServerDate(property);
+			return DateUtils.jsDateToDbDate(property);
 		} else if (metadata.type === 'datetime') {
-			return DateUtils.clientToServerDateTime(property);
+			return DateUtils.jsDateToDbDateTime(property);
 		} else if (metadata.type === 'related' && property === '') {
 			return null;
 		} else if (metadata.type === 'boolean') {
@@ -832,7 +832,7 @@ export class ObjectUtils {
 	 * @param {any} obj - The object to convert
 	 * @returns {Array<T>}
 	 */
-	static toArray<T>(obj: any) {
+	static toArray<T>(obj: any): Array<T> {
 		const res: T[] = [];
 		for (const i in obj) {
 			res.push(obj[i]);
@@ -845,9 +845,9 @@ export class ObjectUtils {
 	 * @name toObject<T>
 	 * @param {Array<T>} array - The array or object to have mapped
 	 * @param {keyof T} property - The property to use as the new key
-	 * @returns {Object}
+	 * @returns {object}
 	 */
-	static toObject<T>(array: T[], property: keyof T) {
+	static toObject<T>(array: T[], property: keyof T): object {
 		const res: any = {};
 		for (const i in array) {
 			if (array[i] === null) continue;
@@ -863,7 +863,7 @@ export class ObjectUtils {
 	 * @param {T} newObj - The new object to use as the updates
 	 * @returns {T}
 	 */
-	static update<T>(obj: T, newObj: T) {
+	static update<T>(obj: T, newObj: T): T {
 		for (const i in newObj) {
 			obj[i] = newObj[i];
 		}
@@ -877,7 +877,7 @@ export class ObjectUtils {
 	 * @param property - The property to sort by
 	 * @param reverse - Sort in reverse direction
 	 */
-	static sort<T>(dataset: T[], property: keyof T, reverse: boolean) {
+	static sort<T>(dataset: T[], property: keyof T, reverse: boolean): T[] {
 		let sortOrder = 1;
 		if (reverse) {
 			sortOrder = -1;
@@ -897,7 +897,7 @@ export class ObjectUtils {
 	 * @param {any} obj - The dataset to check
 	 * @returns {boolean}
 	 */
-	static isEmpty(obj: object) {
+	static isEmpty(obj: object): boolean {
 		for (const i in obj) {
 			if (obj.hasOwnProperty(i)) return false;
 		}
@@ -910,7 +910,7 @@ export class ObjectUtils {
 	 * @param {any} obj
 	 * @returns {number}
 	 */
-	static getObjectLength(obj: object) {
+	static getObjectLength(obj: object): number {
 		return Object.keys(obj).length;
 	}
 
@@ -941,9 +941,9 @@ export class ObjectUtils {
 	 * Groups a dataset by a property.
 	 * @param dataset - The dataset to group
 	 * @param property - The property to group by
-	 * @returns {Object}
+	 * @returns {object}
 	 */
-	static group(dataset: any[], property: string) {
+	static group(dataset: any[], property: string): object {
 		const res: any = {};
 		for (const i in dataset) {
 			if (!res[dataset[i][property]]) res[dataset[i][property]] = [];
@@ -957,9 +957,9 @@ export class ObjectUtils {
 	 * Filter an object down to specific field list
 	 * @param obj {Object} - A given object you wish to filter over
 	 * @param fields {string[]} - An array of columns(keys) wished to return from object
-	 * @returns {Object}
+	 * @returns {object}
 	 * */
-	static filterObject(obj: any, fields: string[]) {
+	static filterObject(obj: any, fields: string[]): object {
 		for (const i in obj) {
 			if (fields.includes(i)) continue;
 			delete obj[i];
@@ -1041,9 +1041,9 @@ export class ObjectUtils {
 	 * Find key difference between two objects
 	 * @param obj1
 	 * @param obj2
-	 * @returns
+	 * @returns {object}
 	 */
-	static findDiffKeys(obj1: any, obj2: any) {
+	static findDiffKeys(obj1: any, obj2: any): object {
 		if (!obj1 || !obj2) {
 			return {};
 		}
@@ -1220,7 +1220,7 @@ export class DateUtils {
 	 * @param {Date | string} date
 	 * @returns {string} - Returns a string such as 10-25-2019 (MM-DD-YYYY)
 	 */
-	static formatDateForUser(date: string | Date) {
+	static formatDateForUser(date: string | Date): string {
 		if (date === 'N/A') return date;
 		const newDate = new Date(`${date}`);
 		return `${(newDate.getMonth() + 1).toString()}-${newDate.getDate()}-${newDate.getFullYear()}`;
@@ -1287,35 +1287,38 @@ export class DateUtils {
 	}
 
 	/**
-	 * Returns a proper date string from database insertion using now's time stamp
+	 * Returns a Mysql compliant datetime string for now
 	 * @name dbNow
 	 * @returns {string} - Returns a string for datetime insertion into a database
 	 */
 	static dbNow(): string {
-		return this.clientToServerDateTime(new Date());
+		return this.jsDateToDbDateTime(new Date());
 	}
+
 	/**
-	 * Returns a proper Date string for a given hour offset
-	 * @name hoursFromNow
+	 * Returns a Mysql compliant datetime string for a given hour offset
+	 * @name dbHoursFromNow
 	 * @param {number} hours - The number of hours you want a date Object formatted
 	 * @returns {string} - Returns a string for datetime insertion into a database
 	 * */
-	static hoursFromNow(hours: number): string {
+	static dbHoursFromNow(hours: number): string {
 		const today = new Date();
 		today.setTime(today.getTime() + hours * (1000 * 60 * 60));
-		return this.clientToServerDateTime(today);
+		return this.jsDateToDbDateTime(today);
 	}
+
 	/**
-	 * Returns a proper Date string for a given hour offset
-	 * @name minutesFromNow
+	 * Returns a Mysql compliant datetime string for a given minute offset
+	 * @name dbMinutesFromNow
 	 * @param {number} minutes - The number of minutes you want a date Object formatted
 	 * @returns {string} - Returns a string for datetime insertion into a database
 	 * */
-	static minutesFromNow(minutes: number): string {
+	static dbMinutesFromNow(minutes: number): string {
 		const today = new Date();
 		today.setTime(today.getTime() + minutes * (1000 * 60));
-		return this.clientToServerDateTime(today);
+		return this.jsDateToDbDateTime(today);
 	}
+
 	/**
 	 * Returns the number of days in the given month and year
 	 * @param {number} month
@@ -1325,6 +1328,7 @@ export class DateUtils {
 	static daysInMonth(month: number, year: number): number {
 		return new Date(year, month, 0).getDate();
 	}
+
 	/**
 	 * Pad a value with a leading zero
 	 * @param {string} num
@@ -1334,6 +1338,7 @@ export class DateUtils {
 		if (num.length >= 2) return num;
 		return '0' + num.slice(-2);
 	}
+
 	/**
 	 * Returns a date object with a new range of days
 	 * @param {Date} date
@@ -1379,7 +1384,7 @@ export class DateUtils {
 	 * @param {Date} date
 	 * @returns {string}
 	 */
-	static displayTime(date: Date | string) {
+	static displayTime(date: Date | string): string {
 		if (typeof date === 'string') {
 			const workingDate: Date | null = this.getDateFromString(date);
 			if (workingDate == null) return date;
@@ -1393,6 +1398,7 @@ export class DateUtils {
 		minutes = minutes < 10 ? `0${minutes}` : minutes;
 		return `${hours}:${minutes} ${ampm}`;
 	}
+
 	/**
 	 * Display date of input date time as this: mm/dd/yyyy
 	 * @name displayDate
@@ -1418,7 +1424,7 @@ export class DateUtils {
 	 * @param {Date} date
 	 * @returns {string}
 	 */
-	static displayDayOfWeek(date: Date) {
+	static displayDayOfWeek(date: Date): string {
 		return days[date.getDay()];
 	}
 
@@ -1428,7 +1434,7 @@ export class DateUtils {
 	 * @param {Date} date
 	 * @returns {boolean}
 	 */
-	static isSameWeekAsCurrent(date: Date) {
+	static isSameWeekAsCurrent(date: Date): boolean {
 		const current = new Date();
 		if (current.getWeekOfMonth() !== date.getWeekOfMonth()) {
 			return false;
@@ -1448,7 +1454,7 @@ export class DateUtils {
 	 * @param {Date} date
 	 * @returns {boolean}
 	 */
-	static isSameDayAsCurrent(date: Date) {
+	static isSameDayAsCurrent(date: Date): boolean {
 		if (!date) {
 			return false;
 		}
@@ -1471,7 +1477,7 @@ export class DateUtils {
 	 * @param {Date} date
 	 * @returns {boolean}
 	 */
-	static isYesterday(date: Date) {
+	static isYesterday(date: Date): boolean {
 		const currentDate = new Date();
 		const todayMidnight = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 		const yesterdayMidnight = new Date(
@@ -1483,32 +1489,32 @@ export class DateUtils {
 	}
 
 	/**
-	 * Convert client date time to server date time string
-	 * @name clientToServerDateTime
+	 * Convert a javascript Date object to a MySQL compatible datetime string
+	 * @name jsDateToDbDateTime
 	 * @param {Date} date
 	 * @returns {string}
 	 */
-	static clientToServerDateTime(date: Date) {
+	static jsDateToDbDateTime(date: Date): string {
 		return date.toISOString().slice(0, 19).replace('T', ' ');
 	}
 
 	/**
-	 * Convert client date to server date string
-	 * @name clientToServerDate
+	 * Convert a javascript Date object to a MySQL compatible date string
+	 * @name jsDateToDbDate
 	 * @param {Date} date
 	 * @returns {string}
 	 */
-	static clientToServerDate(date: Date) {
+	static jsDateToDbDate(date: Date): string {
 		return date.toISOString().substring(0, 10);
 	}
 
 	/**
-	 * Convert server date string to client date
-	 * @name serverToClientDate
-	 * @param {string} dateStr
-	 * @returns {Date}
+	 * Convert a MySQL compatible date column string to a javascript Date object
+	 * @name dbDateToJsDate
+	 * @param {string} dateStr - A date string from a database
+	 * @returns {Date | null}
 	 */
-	static serverToClientDate(dateStr: string) {
+	static dbDateToJsDate(dateStr: string): Date | null {
 		if (!dateStr) {
 			return null;
 		}
@@ -1516,14 +1522,14 @@ export class DateUtils {
 	}
 
 	/**
-	 * Convert server date time string to client date time
-	 * @name serverToClientDateTime
-	 * @param {string} dateStr
-	 * @returns {Date}
+	 * Convert a MySQL compatible datetime column string to a javascript Date object
+	 * @name dbDateTimeToJsDate
+	 * @param {string} dateStr - A datetime string from a database
+	 * @returns {Date | null}
 	 */
-	static serverToClientDateTime(dateStr: string) {
+	static dbDateTimeToJsDate(dateStr: string): Date | null {
 		if (!dateStr) {
-			return dateStr;
+			return null;
 		}
 		const date = DateUtils.dateFromString(dateStr);
 		return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -1535,7 +1541,7 @@ export class DateUtils {
 	 * @param {string} dateStr
 	 * @returns {Date}
 	 */
-	static dateFromString(dateStr: string) {
+	static dateFromString(dateStr: string): Date {
 		dateStr = dateStr.replace('T', ' ').replace('Z', '');
 		const a = dateStr.split(/[^0-9]/).map((s) => {
 			return parseInt(s, 10);
@@ -1544,12 +1550,12 @@ export class DateUtils {
 	}
 
 	/**
-	 * Check if input date is a client date object
-	 * @name isClientDate
+	 * Check if input date is a JS date object
+	 * @name isJsDate
 	 * @param {any} date
 	 * @returns {boolean}
 	 */
-	static isClientDate(date: any) {
+	static isJsDate(date: any): boolean {
 		if (date && date.getTime && typeof date.getTime === 'function') {
 			return true;
 		} else {
