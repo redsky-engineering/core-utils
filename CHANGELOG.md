@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/redsky-engineering/core-utils/compare/v1.1.0...v1.1.1) (2024-05-29)
+
+
+### Features
+
+* added tests to library ([3c9ef26](https://github.com/redsky-engineering/core-utils/commit/3c9ef26c98beceeeeb61ce0ef8374efe707a9367))
+
+
+### Bug Fixes
+
+* toPascalCase and number round ([601d2e9](https://github.com/redsky-engineering/core-utils/commit/601d2e977519e817abba0a78464d00ff9103c797))
+
 ## [1.1.0](https://github.com/redsky-engineering/core-utils/compare/v1.0.2...v1.1.0) (2024-04-06)
 
 
