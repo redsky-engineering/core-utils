@@ -29,10 +29,12 @@ export class StringUtils {
 	static convertCamelCaseToHuman(inputString: string): string {
 		let result = '';
 		let isPrevCharUpperCase = false;
+		let isNextCharUpperCase = false;
 
 		for (let i = 0; i < inputString.length; i++) {
 			const char = inputString[i];
-			if (char === char.toUpperCase() && !isPrevCharUpperCase) {
+			isNextCharUpperCase = i + 1 < inputString.length && inputString[i + 1] === inputString[i + 1].toUpperCase();
+			if (char === char.toUpperCase() && (!isPrevCharUpperCase || !isNextCharUpperCase)) {
 				result += ' ' + char;
 			} else {
 				result += char;
@@ -424,12 +426,12 @@ export class StringUtils {
 	 * @returns {string} - Pascal Case string
 	 */
 	static toPascalCasing(inputString: string): string {
-		// eslint-disable-next-line no-useless-escape
-		const regex = /((\_|-)\w)/;
-		const convert = function (matches: string) {
-			return matches[1].toUpperCase();
+		const regex = /[_-](\w)/g; // Match underscore or hyphen followed by a word character
+		const convert = function (_: string, group1: string) {
+			return group1.toUpperCase();
 		};
-		return StringUtils.capitalizeFirst(inputString.replace(regex, convert));
+		const result = inputString.replace(regex, convert);
+		return StringUtils.capitalizeFirst(result);
 	}
 }
 
@@ -473,7 +475,7 @@ export class NumberUtils {
 
 	/**
 	 * round - Rounds a number to significance
-	 * @param {number } num
+	 * @param {number} num
 	 * @param {number} significance
 	 * @returns {number} number moved to relative significance
 	 */
@@ -481,12 +483,14 @@ export class NumberUtils {
 		if (num === 0) return 0;
 		const sign = Math.sign(num);
 		num = Math.abs(num);
-		significance = Math.abs(Math.trunc(significance));
-		const mod = num % significance;
-		if (mod === 0) {
-			return num;
+		significance = Math.abs(significance);
+		const halfSignificance = significance / 2;
+		const remainder = num % significance;
+		if (remainder >= halfSignificance) {
+			return sign * (num - remainder + significance);
+		} else {
+			return sign * (num - remainder);
 		}
-		return sign * (num - mod + significance);
 	}
 
 	/**
