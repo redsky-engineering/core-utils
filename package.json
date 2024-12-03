@@ -1,6 +1,6 @@
 {
   "name": "@redskytech/core-utils",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A collection of utility functions for use in RedSky Engineering projects",
   "main": "lib/main/index.js",
   "typings": "lib/main/index.d.ts",
@@ -8,6 +8,10 @@
   "repository": "https://github.com/redsky-engineering/core-utils",
   "author": "Joshua Hintze",
   "license": "MIT",
+  "exports": {
+    "import": "./lib/module/index.js",
+    "require": "./lib/main/index.js"
+  },
   "keywords": [
     "typescript",
     "library",
@@ -31,9 +35,9 @@
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --json lib/docs/typedoc.json",
     "prepare": "husky",
     "test": "run-s build test:*",
-    "test:lint": "eslint src --ext .ts",
+    "test:lint": "eslint src",
     "test:prettier": "prettier \"src/**/*.ts\" --check",
-    "test:unit": "mocha --loader tsx tests/**/*.spec.ts",
+    "test:unit": "mocha tests/**/*.spec.ts",
     "release:patch": "standard-version --release-as patch",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
@@ -42,13 +46,10 @@
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/node": "^20.11.20",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
     "chai": "^5.1.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.29.1",
+    "globals": "^15.13.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "mocha": "^10.7.3",
@@ -58,7 +59,8 @@
     "standard-version": "^9.5.0",
     "tsx": "^4.19.1",
     "typedoc": "^0.25.8",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.16.0"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
@@ -71,6 +73,7 @@
     "lodash.clonedeep": "^4.5.0"
   },
   "mocha": {
+    "enable-source-maps": true,
     "node-option": [
       "import=tsx"
     ]

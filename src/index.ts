@@ -1,5 +1,6 @@
 // Todo: fix all the any's and remove this line
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+import crypto from 'crypto';
 import cloneDeep from 'lodash.clonedeep';
 
 declare global {
@@ -170,7 +171,6 @@ export class StringUtils {
 	 */
 	static validateEmail(email: string): boolean {
 		const tester =
-			// eslint-disable-next-line no-useless-escape
 			/^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
 		if (!email) return false;
@@ -252,7 +252,7 @@ export class StringUtils {
 		try {
 			new URL(test);
 			return true;
-		} catch (e) {
+		} catch (_e) {
 			return false;
 		}
 	}
@@ -624,7 +624,7 @@ export class ObjectUtils {
 		if (!json) return {};
 		try {
 			if (typeof json === 'string') return JSON.parse(json);
-		} catch (e) {
+		} catch (_e) {
 			/* empty */
 		}
 		return this.clone(json);
@@ -644,7 +644,7 @@ export class ObjectUtils {
 			}
 			try {
 				return ObjectUtils.deepSafeParse(JSON.parse(json));
-			} catch (err) {
+			} catch (_err) {
 				return json;
 			}
 		} else if (Array.isArray(json)) {
@@ -854,7 +854,7 @@ export class ObjectUtils {
 	static toObject<T>(array: T[], property: keyof T): object {
 		const res: any = {};
 		for (const i in array) {
-			if (array[i] === null) continue;
+			if (array[i] === null || array[i] === undefined) continue;
 			res[array[i][property]] = array[i];
 		}
 		return res;
