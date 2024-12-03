@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/redsky-engineering/core-utils/compare/v1.1.3...v1.1.4) (2024-12-03)
+
+
+### Bug Fixes
+
+* change target output type for more modern javascript ([6428828](https://github.com/redsky-engineering/core-utils/commit/6428828780f1a7b95ec09d3b922fe6cc473bc1f5))
+* new build process using tsup ([1f52d43](https://github.com/redsky-engineering/core-utils/commit/1f52d43cfa628c59e2b74cb197ba90a2b28d7777))
+
 ### [1.1.3](https://github.com/redsky-engineering/core-utils/compare/v1.1.1...v1.1.3) (2024-12-03)
 
 
