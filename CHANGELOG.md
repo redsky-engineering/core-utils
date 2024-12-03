@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/redsky-engineering/core-utils/compare/v1.1.1...v1.1.3) (2024-12-03)
+
+
+### Features
+
+* remove jest and use mocha so that we can use tsx instead of ts-node ([570f288](https://github.com/redsky-engineering/core-utils/commit/570f288f59d495c5c40d1b4b2769ac003533a477))
+
+
+### Bug Fixes
+
+* eslint errors and missing crypto import ([38fc40c](https://github.com/redsky-engineering/core-utils/commit/38fc40c576cfe3d86ce9be2a27f5216751de4260))
+
 ### [1.1.1](https://github.com/redsky-engineering/core-utils/compare/v1.1.0...v1.1.1) (2024-05-29)
 
 
