@@ -8,7 +8,7 @@ export default [
 	prettier,
 	{ files: ['**/*.{js,mjs,cjs,ts}'] },
 	{
-		ignores: []
+		ignores: ['dist/']
 	},
 	{
 		languageOptions: {
