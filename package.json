@@ -1,6 +1,6 @@
 {
 	"name": "@redskytech/core-utils",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"description": "A collection of utility functions for use in RedSky Engineering projects",
 	"types": "./dist/index.d.ts",
 	"repository": "https://github.com/redsky-engineering/core-utils",
@@ -39,7 +39,9 @@
 		"release:pre:alpha": "standard-version --prerelease alpha"
 	},
 	"devDependencies": {
+		"@types/chai": "^5.0.1",
 		"@types/lodash.clonedeep": "^4.5.9",
+    	"@types/mocha": "^10.0.10",
 		"@types/node": "^20.11.20",
 		"chai": "^5.1.1",
 		"eslint": "^9.15.0",

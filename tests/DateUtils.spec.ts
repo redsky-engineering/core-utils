@@ -1,5 +1,5 @@
+import { expect } from 'chai';
 import { DateUtils } from '../src/index.js';
-import {expect} from 'chai';
 
 describe('DateUtils', () => {
 	it('daysBetweenStartAndEndDates should return the number of days between two dates', () => {
@@ -85,7 +85,7 @@ describe('DateUtils', () => {
 	it.skip('getDateRange should get a range of dates inclusive between a start and end date', () => {
 		const startDate = new Date('2023-01-01');
 		const endDate = new Date('2023-01-03');
-		expect(DateUtils.getDateRange(startDate, endDate)).toEqual(['*2023-01-01', '*2023-01-02', '*2023-01-03']);
+		expect(DateUtils.getDateRange(startDate, endDate)).to.equal(['*2023-01-01', '*2023-01-02', '*2023-01-03']);
 	});
 
 	it('displayTime should display time of input date time', () => {
@@ -146,7 +146,8 @@ describe('DateUtils', () => {
 	it('dbDateTimeToJsDate should convert a MySQL compatible datetime column string to a javascript Date object', () => {
 		const dateStr = '2023-01-01 13:45:00';
 		const date = DateUtils.dbDateTimeToJsDate(dateStr);
-		expect(date.toISOString()).to.equal(new Date('2023-01-01T13:45:00Z').toISOString());
+		expect(date).to.not.equal(null);
+		expect(date!.toISOString()).to.equal(new Date('2023-01-01T13:45:00Z').toISOString());
 	});
 
 	it('dateFromString should convert a date string to a date object', () => {

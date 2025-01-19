@@ -1,6 +1,5 @@
 // Todo: fix all the any's and remove this line
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-import crypto from 'crypto';
 import cloneDeep from 'lodash.clonedeep';
 
 declare global {
@@ -1069,12 +1068,23 @@ export class MiscUtils {
 	 * @returns {Promise<string>} - hashed string
 	 */
 	static async sha256Encode(value: string): Promise<string> {
-		const encoder = new TextEncoder();
-		const data = encoder.encode(value);
-		const hash = await crypto.subtle.digest('SHA-256', data);
-		// convert array buffer to string
-		const hashArray = Array.from(new Uint8Array(hash));
-		return hashArray.map((b) => ('00' + b.toString(16)).slice(-2)).join('');
+		if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') {
+			// Browser: Use Web Crypto API
+			const encoder = new TextEncoder();
+			const data = encoder.encode(value);
+			const hash = await window.crypto.subtle.digest('SHA-256', data);
+
+			// Convert ArrayBuffer to Hex String
+			const hashArray = Array.from(new Uint8Array(hash));
+			return hashArray.map((b) => ('00' + b.toString(16)).slice(-2)).join('');
+		} else if (typeof require !== 'undefined') {
+			// Node.js: Use crypto module
+			const crypto = await import('crypto');
+			const hash = crypto.createHash('sha256').update(value, 'utf8').digest('hex');
+			return hash;
+		} else {
+			throw new Error('Crypto functionality is not available in this environment.');
+		}
 	}
 
 	/**
