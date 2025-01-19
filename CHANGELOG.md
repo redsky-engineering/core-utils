@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/redsky-engineering/core-utils/compare/v1.1.4...v1.2.0) (2025-01-19)
+
+
+### Bug Fixes
+
+* sha256 now properly uses web apis when on browsers ([8191ac4](https://github.com/redsky-engineering/core-utils/commit/8191ac4980711ea914af37ba440430043f010d8e))
+
 ### [1.1.4](https://github.com/redsky-engineering/core-utils/compare/v1.1.3...v1.1.4) (2024-12-03)
 
 
