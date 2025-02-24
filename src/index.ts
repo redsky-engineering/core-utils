@@ -341,9 +341,9 @@ export class StringUtils {
 	 * @param {string || number} intNum
 	 * @returns {string}
 	 */
-	static addCommasToNumber(num: number): string {
+	static addCommasToNumber(num: number, decimalPlaces: number = 0): string {
 		if (isNaN(num)) return num.toString();
-		const [integerPart, decimalPart] = num.toString().split('.');
+		const [integerPart, decimalPart] = num.toFixed(decimalPlaces).split('.');
 		const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 		return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
 	}
