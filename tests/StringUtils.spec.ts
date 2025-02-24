@@ -95,6 +95,7 @@ describe('StringUtils', () => {
 
 	it('addCommasToNumber should add commas to number', () => {
 		expect(StringUtils.addCommasToNumber(1000)).to.equal('1,000');
+		expect(StringUtils.addCommasToNumber(1000000.99)).to.equal('1,000,000.99');
 	});
 
 	it('removeHtmlTags should remove HTML tags from string', () => {
