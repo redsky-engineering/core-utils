@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/redsky-engineering/core-utils/compare/v1.2.0...v1.2.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* comments fixed ([afa0043](https://github.com/redsky-engineering/core-utils/commit/afa00437f633e415959c39b333367c633dcfdf25))
+* issue on the add comma to number function on string utils ([7e012d2](https://github.com/redsky-engineering/core-utils/commit/7e012d2611b7cdcd18ef2524c4547efc4c0aab8b))
+
 ## [1.2.0](https://github.com/redsky-engineering/core-utils/compare/v1.1.4...v1.2.0) (2025-01-19)
 
 
