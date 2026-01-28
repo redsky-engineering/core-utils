@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.3](https://github.com/redsky-engineering/core-utils/compare/v1.2.2...v1.2.3) (2026-01-28)
+
+
+### Features
+
+* enhance ObjectUtils serialization to skip undefined items in arrays and improve test coverage for edge cases ([d1379f9](https://github.com/redsky-engineering/core-utils/commit/d1379f91f343313cf73f86383f6dbacde99749a0))
+* enhance ObjectUtils serialization to skip undefined items in arrays and improve test coverage for edge cases ([6f8f8d3](https://github.com/redsky-engineering/core-utils/commit/6f8f8d3957f110deebe1ac033de91ed7b17f9012))
+
 ### [1.2.2](https://github.com/redsky-engineering/core-utils/compare/v1.2.1...v1.2.2) (2026-01-28)
 
 
