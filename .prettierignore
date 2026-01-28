@@ -1,3 +1,6 @@
 # package.json is formatted by package managers, so we ignore it here
 package.json
 dist/
+CHANGELOG.md
+package-lock.json
+pnpm-lock.yaml

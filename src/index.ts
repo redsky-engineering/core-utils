@@ -745,7 +745,7 @@ export class ObjectUtils {
 					const concatStr = concatArray.join('&');
 					str.push(concatStr);
 				} else if (typeof obj[p] === 'object') {
-					str.push(encodeURIComponent(p) + '=' + JSON.stringify(obj[p]));
+					str.push(encodeURIComponent(p) + '=' + encodeURIComponent(JSON.stringify(obj[p])));
 				} else {
 					str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
 				}

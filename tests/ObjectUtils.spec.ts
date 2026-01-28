@@ -185,7 +185,15 @@ describe('ObjectUtils', () => {
 		it('should handle nested objects', () => {
 			const obj = { filter: { status: 'active' } };
 			const result = ObjectUtils.serialize(obj);
-			expect(result).to.equal('filter=' + JSON.stringify({ status: 'active' }));
+			expect(result).to.equal('filter=' + encodeURIComponent(JSON.stringify({ status: 'active' })));
+		});
+
+		it('should encode nested objects with special characters', () => {
+			const obj = { filter: { status: 'a&b=c' } };
+			const result = ObjectUtils.serialize(obj);
+			expect(result).to.equal('filter=' + encodeURIComponent(JSON.stringify({ status: 'a&b=c' })));
+			// Verify that special characters in nested object are properly encoded
+			expect(result).to.not.include('&b=c');
 		});
 
 		it('should encode special characters', () => {
