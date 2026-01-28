@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/redsky-engineering/core-utils/compare/v1.2.1...v1.2.2) (2026-01-28)
+
+
+### Features
+
+* add formatting script and improve object encoding in query strings ([eb719e9](https://github.com/redsky-engineering/core-utils/commit/eb719e9690650b20986215cbef989f11b1aab92e))
+
 ### [1.2.1](https://github.com/redsky-engineering/core-utils/compare/v1.2.0...v1.2.1) (2025-02-24)
 
 
