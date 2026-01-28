@@ -727,30 +727,35 @@ export class ObjectUtils {
 	 * @returns {string}
 	 */
 	static serialize(obj: any): string {
-		const str = [];
-		for (const p in obj)
-			if (obj.hasOwnProperty(p)) {
-				if (Array.isArray(obj[p])) {
-					const concatArray: string[] = [];
-					for (let i = 0; i < obj[p].length; i++) {
-						const element = obj[p][i];
-						if (typeof element === 'object' && element !== null) {
-							concatArray.push(
-								encodeURIComponent(p) + '[]=' + encodeURIComponent(JSON.stringify(element))
-							);
-						} else {
-							concatArray.push(encodeURIComponent(p) + '[]=' + encodeURIComponent(element));
-						}
+		const params: string[] = [];
+
+		for (const key in obj) {
+			if (!obj.hasOwnProperty(key)) continue;
+
+			const value = obj[key];
+
+			// Skip undefined values
+			if (value === undefined) continue;
+
+			if (Array.isArray(value)) {
+				// Handle arrays: repeat the same key for each item
+				for (const item of value) {
+					if (typeof item === 'object' && item !== null) {
+						params.push(encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(item)));
+					} else {
+						params.push(encodeURIComponent(key) + '=' + encodeURIComponent(item));
 					}
-					const concatStr = concatArray.join('&');
-					str.push(concatStr);
-				} else if (typeof obj[p] === 'object') {
-					str.push(encodeURIComponent(p) + '=' + encodeURIComponent(JSON.stringify(obj[p])));
-				} else {
-					str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
 				}
+			} else if (typeof value === 'object' && value !== null) {
+				// Handle objects: JSON stringify
+				params.push(encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(value)));
+			} else {
+				// Handle primitives
+				params.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
 			}
-		return str.join('&');
+		}
+
+		return params.join('&');
 	}
 
 	/**
