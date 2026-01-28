@@ -733,7 +733,14 @@ export class ObjectUtils {
 				if (Array.isArray(obj[p])) {
 					const concatArray: string[] = [];
 					for (let i = 0; i < obj[p].length; i++) {
-						concatArray.push(encodeURIComponent(p) + '[]=' + encodeURIComponent(obj[p][i]));
+						const element = obj[p][i];
+						if (typeof element === 'object' && element !== null) {
+							concatArray.push(
+								encodeURIComponent(p) + '[]=' + encodeURIComponent(JSON.stringify(element))
+							);
+						} else {
+							concatArray.push(encodeURIComponent(p) + '[]=' + encodeURIComponent(element));
+						}
 					}
 					const concatStr = concatArray.join('&');
 					str.push(concatStr);

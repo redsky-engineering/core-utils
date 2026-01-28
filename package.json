@@ -28,6 +28,7 @@
 		"doc": "run-s doc:html && open-cli lib/docs/index.html",
 		"doc:html": "typedoc src/ --exclude **/*.spec.ts --out lib/docs",
 		"doc:json": "typedoc src/ --exclude **/*.spec.ts --json lib/docs/typedoc.json",
+		"format": "prettier --write .",
 		"prepare": "husky",
 		"test": "run-s build test:*",
 		"test:lint": "eslint src",

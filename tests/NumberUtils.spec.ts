@@ -1,11 +1,11 @@
 import { NumberUtils } from '../src/';
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 describe('NumberUtils', () => {
 	it('deg2Rad should convert degrees to radians', () => {
 		expect(NumberUtils.deg2Rad(0)).to.equal(0);
 		expect(NumberUtils.deg2Rad(180)).to.be.closeTo(Math.PI, 0.001);
-		expect(NumberUtils.deg2Rad(360)).to.be.closeTo(2 * Math.PI,0.001);
+		expect(NumberUtils.deg2Rad(360)).to.be.closeTo(2 * Math.PI, 0.001);
 	});
 
 	it('rad2Deg should convert radians to degrees', () => {
