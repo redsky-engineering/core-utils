@@ -740,6 +740,9 @@ export class ObjectUtils {
 			if (Array.isArray(value)) {
 				// Handle arrays: repeat the same key for each item
 				for (const item of value) {
+					// Skip undefined items in arrays
+					if (item === undefined) continue;
+
 					if (typeof item === 'object' && item !== null) {
 						params.push(encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(item)));
 					} else {
