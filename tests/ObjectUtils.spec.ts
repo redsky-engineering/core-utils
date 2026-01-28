@@ -166,20 +166,51 @@ describe('ObjectUtils', () => {
 		it('should handle array values with primitives', () => {
 			const obj = { ids: [1, 2, 3] };
 			const result = ObjectUtils.serialize(obj);
-			expect(result).to.equal('ids[]=1&ids[]=2&ids[]=3');
+			expect(result).to.equal('ids=1&ids=2&ids=3');
 		});
 
-		it('should handle array of objects', () => {
+		it('should handle array of objects with undefined values', () => {
 			const obj = {
 				items: [
-					{ productId: 6, quantity: 1, subscriptionIntervalUnit: 'MONTH' },
-					{ productId: 7, quantity: 1, subscriptionIntervalUnit: 'MONTH' }
-				]
+					{
+						productId: 6,
+						quantity: 1,
+						variantId: undefined,
+						subscriptionIntervalUnit: 'MONTH',
+						subscriptionIntervalCount: undefined,
+						subscriptionPlanId: undefined
+					},
+					{
+						productId: 7,
+						quantity: 1,
+						variantId: undefined,
+						subscriptionIntervalUnit: 'MONTH',
+						subscriptionIntervalCount: undefined,
+						subscriptionPlanId: undefined
+					}
+				],
+				customerUserId: 31,
+				postalCode: '84660',
+				countryCode: 'US',
+				customItems: undefined
 			};
-			const result = ObjectUtils.serialize(obj);
-			expect(result).to.include('items[]=');
-			expect(result).to.include(encodeURIComponent(JSON.stringify(obj.items[0])));
-			expect(result).to.include(encodeURIComponent(JSON.stringify(obj.items[1])));
+		const result = ObjectUtils.serialize(obj);
+
+		// Build expected result - JSON.stringify omits undefined properties from objects
+		// So variantId, subscriptionIntervalCount, and subscriptionPlanId will be omitted
+		const expectedItem0 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[0]));
+		const expectedItem1 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[1]));
+		const expectedCustomerUserId = 'customerUserId=31';
+		const expectedPostalCode = 'postalCode=84660';
+		const expectedCountryCode = 'countryCode=US';
+		// customItems is undefined at root level, so it should be skipped by serialize
+
+			expect(result).to.include(expectedItem0);
+			expect(result).to.include(expectedItem1);
+			expect(result).to.include(expectedCustomerUserId);
+			expect(result).to.include(expectedPostalCode);
+			expect(result).to.include(expectedCountryCode);
+			expect(result).to.not.include('customItems');
 		});
 
 		it('should handle nested objects', () => {
@@ -201,6 +232,49 @@ describe('ObjectUtils', () => {
 			const result = ObjectUtils.serialize(obj);
 			expect(result).to.include('name=hello%20world');
 			expect(result).to.include('special=%26%3D');
+		});
+
+		it('should skip undefined values', () => {
+			const obj = { name: 'test', value: undefined, other: 'data' };
+			const result = ObjectUtils.serialize(obj);
+			expect(result).to.equal('name=test&other=data');
+			expect(result).to.not.include('value');
+		});
+
+		it('should skip undefined items in arrays', () => {
+			const obj = { ids: [1, undefined, 3, undefined, 5] };
+			const result = ObjectUtils.serialize(obj);
+			// undefined items should be skipped
+			expect(result).to.equal('ids=1&ids=3&ids=5');
+			expect(result).to.not.include('undefined');
+		});
+
+		it('should handle arrays with null items but skip undefined items', () => {
+			const obj = { values: [1, null, undefined, 'test'] };
+			const result = ObjectUtils.serialize(obj);
+			// null is kept as 'null', but undefined is skipped
+			expect(result).to.equal('values=1&values=null&values=test');
+			expect(result).to.not.include('undefined');
+		});
+
+		it('should handle arrays with only undefined items', () => {
+			const obj = { name: 'test', ids: [undefined, undefined], other: 'data' };
+			const result = ObjectUtils.serialize(obj);
+			// Array with only undefined items results in no params for that key
+			expect(result).to.equal('name=test&other=data');
+			expect(result).to.not.include('ids');
+		});
+
+		it('should handle null values', () => {
+			const obj = { name: 'test', value: null };
+			const result = ObjectUtils.serialize(obj);
+			expect(result).to.equal('name=test&value=null');
+		});
+
+		it('should handle empty arrays', () => {
+			const obj = { name: 'test', ids: [] };
+			const result = ObjectUtils.serialize(obj);
+			expect(result).to.equal('name=test');
 		});
 	});
 
