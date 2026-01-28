@@ -194,15 +194,16 @@ describe('ObjectUtils', () => {
 				countryCode: 'US',
 				customItems: undefined
 			};
-			const result = ObjectUtils.serialize(obj);
+		const result = ObjectUtils.serialize(obj);
 
-			// Build expected result - undefined values in nested objects are preserved in JSON.stringify
-			const expectedItem0 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[0]));
-			const expectedItem1 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[1]));
-			const expectedCustomerUserId = 'customerUserId=31';
-			const expectedPostalCode = 'postalCode=84660';
-			const expectedCountryCode = 'countryCode=US';
-			// customItems is undefined at root level, so it should be skipped
+		// Build expected result - JSON.stringify omits undefined properties from objects
+		// So variantId, subscriptionIntervalCount, and subscriptionPlanId will be omitted
+		const expectedItem0 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[0]));
+		const expectedItem1 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[1]));
+		const expectedCustomerUserId = 'customerUserId=31';
+		const expectedPostalCode = 'postalCode=84660';
+		const expectedCountryCode = 'countryCode=US';
+		// customItems is undefined at root level, so it should be skipped by serialize
 
 			expect(result).to.include(expectedItem0);
 			expect(result).to.include(expectedItem1);
