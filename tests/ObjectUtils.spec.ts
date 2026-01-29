@@ -163,11 +163,11 @@ describe('ObjectUtils', () => {
 			expect(result).to.equal('name=test&value=123');
 		});
 
-		it('should handle array values with primitives', () => {
-			const obj = { ids: [1, 2, 3] };
-			const result = ObjectUtils.serialize(obj);
-			expect(result).to.equal('ids=1&ids=2&ids=3');
-		});
+	it('should handle array values with primitives', () => {
+		const obj = { ids: [1, 2, 3] };
+		const result = ObjectUtils.serialize(obj);
+		expect(result).to.equal('ids[]=1&ids[]=2&ids[]=3');
+	});
 
 		it('should handle array of objects with undefined values', () => {
 			const obj = {
@@ -194,12 +194,12 @@ describe('ObjectUtils', () => {
 				countryCode: 'US',
 				customItems: undefined
 			};
-		const result = ObjectUtils.serialize(obj);
+			const result = ObjectUtils.serialize(obj);
 
 		// Build expected result - JSON.stringify omits undefined properties from objects
 		// So variantId, subscriptionIntervalCount, and subscriptionPlanId will be omitted
-		const expectedItem0 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[0]));
-		const expectedItem1 = 'items=' + encodeURIComponent(JSON.stringify(obj.items[1]));
+		const expectedItem0 = 'items[]=' + encodeURIComponent(JSON.stringify(obj.items[0]));
+		const expectedItem1 = 'items[]=' + encodeURIComponent(JSON.stringify(obj.items[1]));
 		const expectedCustomerUserId = 'customerUserId=31';
 		const expectedPostalCode = 'postalCode=84660';
 		const expectedCountryCode = 'countryCode=US';
@@ -207,6 +207,40 @@ describe('ObjectUtils', () => {
 
 			expect(result).to.include(expectedItem0);
 			expect(result).to.include(expectedItem1);
+			expect(result).to.include(expectedCustomerUserId);
+			expect(result).to.include(expectedPostalCode);
+			expect(result).to.include(expectedCountryCode);
+			expect(result).to.not.include('customItems');
+		});
+
+		it('should handle array with one object with undefined values', () => {
+			const obj = {
+				items: [
+					{
+						productId: 6,
+						quantity: 1,
+						variantId: undefined,
+						subscriptionIntervalUnit: 'MONTH',
+						subscriptionIntervalCount: undefined,
+						subscriptionPlanId: undefined
+					}
+				],
+				customerUserId: 31,
+				postalCode: '84660',
+				countryCode: 'US',
+				customItems: undefined
+			};
+			const result = ObjectUtils.serialize(obj);
+
+		// Build expected result - JSON.stringify omits undefined properties from objects
+		// So variantId, subscriptionIntervalCount, and subscriptionPlanId will be omitted
+		const expectedItem0 = 'items[]=' + encodeURIComponent(JSON.stringify(obj.items[0]));
+		const expectedCustomerUserId = 'customerUserId=31';
+		const expectedPostalCode = 'postalCode=84660';
+		const expectedCountryCode = 'countryCode=US';
+		// customItems is undefined at root level, so it should be skipped by serialize
+
+			expect(result).to.include(expectedItem0);
 			expect(result).to.include(expectedCustomerUserId);
 			expect(result).to.include(expectedPostalCode);
 			expect(result).to.include(expectedCountryCode);
@@ -241,21 +275,21 @@ describe('ObjectUtils', () => {
 			expect(result).to.not.include('value');
 		});
 
-		it('should skip undefined items in arrays', () => {
-			const obj = { ids: [1, undefined, 3, undefined, 5] };
-			const result = ObjectUtils.serialize(obj);
-			// undefined items should be skipped
-			expect(result).to.equal('ids=1&ids=3&ids=5');
-			expect(result).to.not.include('undefined');
-		});
+	it('should skip undefined items in arrays', () => {
+		const obj = { ids: [1, undefined, 3, undefined, 5] };
+		const result = ObjectUtils.serialize(obj);
+		// undefined items should be skipped
+		expect(result).to.equal('ids[]=1&ids[]=3&ids[]=5');
+		expect(result).to.not.include('undefined');
+	});
 
-		it('should handle arrays with null items but skip undefined items', () => {
-			const obj = { values: [1, null, undefined, 'test'] };
-			const result = ObjectUtils.serialize(obj);
-			// null is kept as 'null', but undefined is skipped
-			expect(result).to.equal('values=1&values=null&values=test');
-			expect(result).to.not.include('undefined');
-		});
+	it('should handle arrays with null items but skip undefined items', () => {
+		const obj = { values: [1, null, undefined, 'test'] };
+		const result = ObjectUtils.serialize(obj);
+		// null is kept as 'null', but undefined is skipped
+		expect(result).to.equal('values[]=1&values[]=null&values[]=test');
+		expect(result).to.not.include('undefined');
+	});
 
 		it('should handle arrays with only undefined items', () => {
 			const obj = { name: 'test', ids: [undefined, undefined], other: 'data' };

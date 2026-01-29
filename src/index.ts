@@ -738,15 +738,15 @@ export class ObjectUtils {
 			if (value === undefined) continue;
 
 			if (Array.isArray(value)) {
-				// Handle arrays: repeat the same key for each item
+				// Handle arrays: use bracket notation to preserve array type
 				for (const item of value) {
 					// Skip undefined items in arrays
 					if (item === undefined) continue;
 
 					if (typeof item === 'object' && item !== null) {
-						params.push(encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(item)));
+						params.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(JSON.stringify(item)));
 					} else {
-						params.push(encodeURIComponent(key) + '=' + encodeURIComponent(item));
+						params.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(item));
 					}
 				}
 			} else if (typeof value === 'object' && value !== null) {
