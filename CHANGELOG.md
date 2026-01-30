@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.4](https://github.com/redsky-engineering/core-utils/compare/v1.2.3...v1.2.4) (2026-01-30)
+
+
+### Bug Fixes
+
+* update ObjectUtils serialization to use bracket notation for array values and enhance test cases for better coverage ([1367ce6](https://github.com/redsky-engineering/core-utils/commit/1367ce6b3a2ba91d7103f94cd3bf73463badcb73))
+
 ### [1.2.3](https://github.com/redsky-engineering/core-utils/compare/v1.2.2...v1.2.3) (2026-01-28)
 
 
