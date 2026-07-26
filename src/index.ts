@@ -311,15 +311,34 @@ export class StringUtils {
 
 	/**
 	 * Generate a unique GUID. It is a compatibility function for crypto.randomUUID() as not all browsers support it.
+	 * Values are suitable for use as security tokens.
 	 * @name generateGuid
 	 * @returns {string} - Returns a string unique GUID
 	 * */
 	static generateGuid(): string {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-			const r = (Math.random() * 16) | 0,
-				v = c === 'x' ? r : (r & 0x3) | 0x8;
-			return v.toString(16);
-		});
+		// Not randomUUID: it is secure-context only, the exact gap this function exists to cover.
+		const webCrypto = globalThis.crypto;
+		if (!webCrypto?.getRandomValues) {
+			throw new Error(
+				'generateGuid requires the Web Crypto API (globalThis.crypto.getRandomValues), which is unavailable in this environment.'
+			);
+		}
+
+		const bytes = new Uint8Array(16);
+		webCrypto.getRandomValues(bytes);
+		bytes[6] = (bytes[6] & 0x0f) | 0x40;
+		bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+		const hex: string[] = [];
+		for (let i = 0; i < bytes.length; i++) hex.push(bytes[i].toString(16).padStart(2, '0'));
+
+		return [
+			hex.slice(0, 4).join(''),
+			hex.slice(4, 6).join(''),
+			hex.slice(6, 8).join(''),
+			hex.slice(8, 10).join(''),
+			hex.slice(10, 16).join('')
+		].join('-');
 	}
 
 	/**
@@ -1085,23 +1104,19 @@ export class MiscUtils {
 	 * @returns {Promise<string>} - hashed string
 	 */
 	static async sha256Encode(value: string): Promise<string> {
-		if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') {
-			// Browser: Use Web Crypto API
-			const encoder = new TextEncoder();
-			const data = encoder.encode(value);
-			const hash = await window.crypto.subtle.digest('SHA-256', data);
-
-			// Convert ArrayBuffer to Hex String
-			const hashArray = Array.from(new Uint8Array(hash));
-			return hashArray.map((b) => ('00' + b.toString(16)).slice(-2)).join('');
-		} else if (typeof require !== 'undefined') {
-			// Node.js: Use crypto module
-			const crypto = await import('crypto');
-			const hash = crypto.createHash('sha256').update(value, 'utf8').digest('hex');
-			return hash;
-		} else {
-			throw new Error('Crypto functionality is not available in this environment.');
+		// Node exposes crypto.subtle from 19 on, so a node:crypto fallback would only add a module browser builds externalize.
+		const subtle = globalThis.crypto?.subtle;
+		if (!subtle) {
+			throw new Error(
+				'sha256Encode requires the Web Crypto API (globalThis.crypto.subtle), which browsers expose only in a secure context (https or localhost).'
+			);
 		}
+
+		const data = new TextEncoder().encode(value);
+		const hash = await subtle.digest('SHA-256', data);
+
+		const hashArray = Array.from(new Uint8Array(hash));
+		return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 	}
 
 	/**

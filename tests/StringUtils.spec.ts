@@ -89,6 +89,30 @@ describe('StringUtils', () => {
 		expect(guid1).not.to.equal(guid2);
 	});
 
+	it('generateGuid should return a well formed v4 GUID', () => {
+		const guid = StringUtils.generateGuid();
+		expect(guid).to.have.lengthOf(36);
+		expect(guid).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+	});
+
+	it('generateGuid should not collide across a large sample', () => {
+		const guids = new Set<string>();
+		for (let i = 0; i < 10000; i++) guids.add(StringUtils.generateGuid());
+		expect(guids.size).to.equal(10000);
+	});
+
+	it('generateGuid should draw evenly across the hex alphabet', () => {
+		const counts = new Map<string, number>();
+		for (let i = 0; i < 5000; i++) {
+			for (const character of StringUtils.generateGuid().replace(/-/g, '')) {
+				counts.set(character, (counts.get(character) ?? 0) + 1);
+			}
+		}
+		expect(counts.size).to.equal(16);
+		const frequencies = [...counts.values()];
+		expect(Math.min(...frequencies) / Math.max(...frequencies)).to.be.greaterThan(0.5);
+	});
+
 	it('snakeCaseToHuman should convert snake case to human readable string', () => {
 		expect(StringUtils.snakeCaseToHuman('snake_case')).to.equal('Snake Case');
 	});
