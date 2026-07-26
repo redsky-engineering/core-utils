@@ -316,8 +316,7 @@ export class StringUtils {
 	 * @returns {string} - Returns a string unique GUID
 	 * */
 	static generateGuid(): string {
-		// getRandomValues rather than randomUUID: randomUUID is secure-context only, so it is undefined
-		// over plain http, which is exactly the compatibility gap this function exists to cover.
+		// Not randomUUID: it is secure-context only, the exact gap this function exists to cover.
 		const webCrypto = globalThis.crypto;
 		if (!webCrypto?.getRandomValues) {
 			throw new Error(
@@ -1105,8 +1104,7 @@ export class MiscUtils {
 	 * @returns {Promise<string>} - hashed string
 	 */
 	static async sha256Encode(value: string): Promise<string> {
-		// One Web Crypto path for both runtimes: Node exposes globalThis.crypto.subtle from 19 onward,
-		// so importing node:crypto here would only add a bundler-externalized module for browser builds.
+		// Node exposes crypto.subtle from 19 on, so a node:crypto fallback would only add a module browser builds externalize.
 		const subtle = globalThis.crypto?.subtle;
 		if (!subtle) {
 			throw new Error(
