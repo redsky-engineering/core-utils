@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.5](https://github.com/redsky-engineering/core-utils/compare/v1.2.4...v1.2.5) (2026-07-26)
+
+
+### Bug Fixes
+
+* generate GUIDs with a CSPRNG and unify sha256Encode on Web Crypto ([be3131a](https://github.com/redsky-engineering/core-utils/commit/be3131a3354b5625a37b8e53d35014fe4d9f3c9e))
+
 ### [1.2.4](https://github.com/redsky-engineering/core-utils/compare/v1.2.3...v1.2.4) (2026-01-30)
 
 
